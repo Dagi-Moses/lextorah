@@ -1,6 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
-import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:Lextorah/hive/boxes.dart';
 import 'package:Lextorah/hive/settings.dart';
 import 'package:Lextorah/providers/settings_provider.dart';
-import 'package:Lextorah/widgets/build_display_image.dart';
+
 import 'package:Lextorah/widgets/settings_tile.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -22,58 +20,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // File? file;
-  String userImage = '';
-  String userName = 'user';
-  // final ImagePicker _picker = ImagePicker();
-
-  // pick an image
-
-  Uint8List? fileBytes; // For web
-
-  void pickImage() async {
-    try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        allowMultiple: false,
-        withData: true, // important for web!
-      );
-
-      if (result != null && result.files.isNotEmpty) {
-        final picked = result.files.first;
-
-        setState(() {
-          fileBytes = picked.bytes; // For web preview via Image.memory
-        });
-      }
-    } catch (e) {
-      log('error: $e');
-    }
-  }
-
-  // get user data
-  void getUserData() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // get user data fro box
-      final userBox = Boxes.getUser();
-
-      // check is user data is not empty
-      if (userBox.isNotEmpty) {
-        final user = userBox.getAt(0);
-        setState(() {
-          userImage = user!.name;
-          userName = user.image;
-        });
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    getUserData();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,24 +43,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Center(
-                child: BuildDisplayImage(
-                  fileBytes: fileBytes,
-                  userImage: userImage,
-                  onPressed: () {
-                    // open camera or gallery
-                    pickImage();
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 20.0),
-
-              // user name
-              Text(userName, style: Theme.of(context).textTheme.titleSmall),
-
-              const SizedBox(height: 40.0),
-
               ValueListenableBuilder<Box<Settings>>(
                 valueListenable: Boxes.getSettings().listenable(),
                 builder: (context, box, child) {

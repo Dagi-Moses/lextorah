@@ -15,7 +15,7 @@ class EmptyHistoryWidget extends StatelessWidget {
           final chatProvider = context.read<ChatProvider>();
           // prepare chat room
           await chatProvider.prepareChatRoom(isNewChat: true, chatID: '');
-          chatProvider.setCurrentIndex(newIndex: 1);
+
           chatProvider.pageController.jumpToPage(1);
         },
         child: Container(

@@ -19,16 +19,19 @@ import 'package:uuid/uuid.dart';
 
 class ChatProvider extends ChangeNotifier {
   // list of messages
+
+  ChatProvider() {
+    _pageController = PageController(initialPage: currentIndex, keepPage: true);
+  }
   final List<Message> _inChatMessages = [];
 
   // page controller
-  final PageController _pageController = PageController(initialPage: 1);
+  late PageController _pageController;
+
+  int _currentIndex = 1;
 
   // images file list
   List<PlatformFile>? _imagesFileList = [];
-
-  // index of the current screen
-  int _currentIndex = 1;
 
   // cuttent chatId
   String _currentChatId = '';
@@ -52,10 +55,9 @@ class ChatProvider extends ChangeNotifier {
   List<Message> get inChatMessages => _inChatMessages;
 
   PageController get pageController => _pageController;
+  int get currentIndex => _currentIndex;
 
   List<PlatformFile>? get imagesFileList => _imagesFileList;
-
-  int get currentIndex => _currentIndex;
 
   String get currentChatId => _currentChatId;
 
@@ -70,6 +72,11 @@ class ChatProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   // setters
+  void navigate(int index) {
+    _pageController.jumpToPage(index);
+    _currentIndex = index;
+    notifyListeners();
+  }
 
   // set inChatMessages
   Future<void> setInChatMessages({required String chatId}) async {
@@ -120,25 +127,6 @@ class ChatProvider extends ChangeNotifier {
     return newModel;
   }
 
-  // // function to set the model based on bool - isTextOnly
-  // Future<void> setModel({required bool isTextOnly}) async {
-
-  //   if (isTextOnly) {
-  //     _model = _textModel ??
-  //         GenerativeModel(
-  //           model: setCurrentModel(newModel: 'gemini-pro'),
-  //           apiKey: ApiService.apiKey,
-  //         );
-  //   } else {
-  //     _model = _visionModel ??
-  //         GenerativeModel(
-  //           model: setCurrentModel(newModel: 'gemini-pro-vision'),
-  //           apiKey: ApiService.apiKey,
-  //         );
-  //   }
-  //   notifyListeners();
-  // }
-
   Future<void> setModel({required bool isTextOnly}) async {
     if (isTextOnly) {
       _model =
@@ -155,12 +143,6 @@ class ChatProvider extends ChangeNotifier {
             apiKey: ApiService.apiKey,
           );
     }
-    notifyListeners();
-  }
-
-  // set current page index
-  void setCurrentIndex({required int newIndex}) {
-    _currentIndex = newIndex;
     notifyListeners();
   }
 
@@ -548,5 +530,11 @@ class ChatProvider extends ChangeNotifier {
     await Hive.openBox<ChatHistory>(Constants.chatHistoryBox);
     await Hive.openBox<UserModel>(Constants.userBox);
     await Hive.openBox<Settings>(Constants.settingsBox);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose(); // Dispose of the PageController
+    super.dispose();
   }
 }

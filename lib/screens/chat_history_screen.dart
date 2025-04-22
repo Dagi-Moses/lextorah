@@ -22,7 +22,11 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
         centerTitle: true,
         title: const Text(
           'Chat history',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
       ),
       body: ValueListenableBuilder<Box<ChatHistory>>(

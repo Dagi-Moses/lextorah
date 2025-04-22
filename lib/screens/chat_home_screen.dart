@@ -13,7 +13,11 @@ class ChatHomeScreen extends StatefulWidget {
   State<ChatHomeScreen> createState() => _ChatHomeScreenState();
 }
 
-class _ChatHomeScreenState extends State<ChatHomeScreen> {
+class _ChatHomeScreenState extends State<ChatHomeScreen>
+    with AutomaticKeepAliveClientMixin<ChatHomeScreen> {
+  @override
+  bool get wantKeepAlive => true; // Ensures the screen is kept alive when switching between tabs.
+
   // list of screens
   final List<Widget> _screens = [
     const ChatHistoryScreen(),
@@ -23,16 +27,18 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
         return Scaffold(
           backgroundColor: Colors.grey[400],
           body: PageView(
             controller: chatProvider.pageController,
+            physics: const NeverScrollableScrollPhysics(),
             children: _screens,
-            onPageChanged: (index) {
-              chatProvider.setCurrentIndex(newIndex: index);
-            },
+            // onPageChanged: (index) {
+            //   chatProvider.navigate(index);
+            // },
           ),
           bottomNavigationBar: customBottomNav(context, chatProvider),
         );
@@ -66,8 +72,7 @@ Widget customBottomNav(BuildContext context, ChatProvider provider) {
             size: 25,
           ),
           onPressed: () {
-            provider.setCurrentIndex(newIndex: index);
-            provider.pageController.jumpToPage(index);
+            provider.navigate(index);
           },
           tooltip: "", // avoid showing label on hover
         );
