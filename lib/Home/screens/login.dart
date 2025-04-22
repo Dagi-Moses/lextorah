@@ -48,10 +48,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       body: Center(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formkey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
                   "Welcome to lextorah - school of languages",
@@ -60,11 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
+                  textAlign: TextAlign.center, // Ensure the text is centered
                 ),
                 const SizedBox(height: 5),
                 const Text(
                   "Get answers to your academic questions instantly",
                   style: TextStyle(color: Colors.black),
+                  textAlign: TextAlign.center, // Ensure the text is centered
                 ),
                 const SizedBox(height: 5),
                 Card(

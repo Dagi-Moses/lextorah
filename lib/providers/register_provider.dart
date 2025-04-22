@@ -70,70 +70,6 @@ class RegistrationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> storeAuthToken(String authToken) async {
-  //   prefs.setString('auth_token', authToken);
-  // }
-
-  // Future<void> sendOtp({
-  //   required Student user,
-  //   required String password,
-  //   TextEditingController? resendController, // Optional parameter
-  //   required bool isResend,
-  //   required BuildContext context,
-  // }) async {
-  //   isLoading = true;
-  //   errorMessage = null;
-
-  //   try {
-  //     if (isResend) {
-  //       resendController!.clear();
-  //     }
-  //     List<String> signInMethods = await FirebaseAuth.instance
-  //         .fetchSignInMethodsForEmail(user.email!);
-  //     if (signInMethods.isEmpty) {
-  //       final response = await http
-  //           .post(
-  //             Uri.parse('${Constants.serverUrl}/send-otp'),
-  //             headers: {'Content-Type': 'application/json'},
-  //             body: jsonEncode({'email': user.email?.trim()}),
-  //           )
-  //           .timeout(
-  //             Duration(seconds: 16), // Timeout duration
-  //             onTimeout: () {
-  //               throw TimeoutException("OTP request timed out");
-  //             },
-  //           );
-  //       print("message + ${response.body}");
-  //       if (response.statusCode == 200) {
-  //         errorMessage = null;
-  //         if (isResend) {
-  //           snackBar("OTP Resent", context);
-  //         } else {
-  //          // context.go(AppRoutePath.otpVerification);
-
-  //           Navigator.pushNamed(
-  //             context,
-  //             Routes.regCodeVerification,
-  //             arguments: RegistrationCodeVerificationArgs(
-  //               user: user,
-  //               password: password,
-  //             ),
-  //           );
-  //         }
-  //       } else {
-  //         errorMessage = app.failedToSendOtp;
-  //       }
-  //     } else {
-  //       errorMessage = app.emailAlreadyInUse;
-  //     }
-  //   } catch (error) {
-  //     errorMessage = app.anError;
-  //     print(error);
-  //   } finally {
-  //     isLoading = false;
-  //   }
-  // }
-
   Future<void> sendOtp({
     Student? user,
     String? password,
@@ -172,8 +108,11 @@ class RegistrationProvider with ChangeNotifier {
               body: jsonEncode({'email': user?.email.trim() ?? email.trim()}),
             )
             .timeout(
-              const Duration(seconds: 30),
-              onTimeout: () => throw TimeoutException("OTP request timed out"),
+              const Duration(seconds: 40),
+              onTimeout: () {
+                errorMessage = "OTP request timed out";
+                throw TimeoutException("OTP request timed out");
+              },
             );
 
         if (response.statusCode == 200) {
@@ -200,7 +139,6 @@ class RegistrationProvider with ChangeNotifier {
         errorMessage = "email already in use";
       }
     } catch (error) {
-      errorMessage = "An error occurred, Please try again";
       if (error is FirebaseException) {
         debugPrint('FirebaseException: ${error.message}');
       } else {
@@ -255,8 +193,9 @@ class RegistrationProvider with ChangeNotifier {
             body: jsonEncode(payload),
           )
           .timeout(
-            Duration(seconds: 40), // Timeout duration
+            const Duration(seconds: 40),
             onTimeout: () {
+              errorMessage = "OTP request timed out";
               throw TimeoutException("OTP request timed out");
             },
           );
@@ -288,7 +227,6 @@ class RegistrationProvider with ChangeNotifier {
         ); // Trigger shake animation
       }
     } catch (error) {
-      errorMessage = "An unexpected error occurred. Please try again.";
       errorController?.add(ErrorAnimationType.shake); // Trigger shake animation
       print("Error: ${error}");
     } finally {
