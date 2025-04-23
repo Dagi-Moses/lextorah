@@ -258,7 +258,7 @@ class _SignupScreenState extends State<SignupScreen>
                       child: Text(
                         "Sign in",
                         style: TextStyle(
-                          color: Colors.blue.withOpacity(0.9),
+                          color: Colors.blue,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.5,
                           fontSize: 14,
@@ -268,6 +268,7 @@ class _SignupScreenState extends State<SignupScreen>
                   ],
                 ),
               ),
+              SizedBox(height: 20),
             ],
           ),
         ),
