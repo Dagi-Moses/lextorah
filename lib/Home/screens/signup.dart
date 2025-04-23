@@ -252,8 +252,8 @@ class _SignupScreenState extends State<SignupScreen>
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.go(AppRouteName.home);
-                        // GoRouter.of(context).pop();
+                        context.go(AppRoutePath.home);
+                        //GoRouter.of(context).pop();
                       },
                       child: Text(
                         "Sign in",
